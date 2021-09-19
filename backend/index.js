@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const postRoutes = require("./routes/posts");
+const userRoutes = require("./routes/user");
 const path = require("path");
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
 app.use("/api/posts", postRoutes);
+app.use("/api/user", userRoutes);
 
 
 app.use(express.static(path.join(__dirname, "../frontend/build")));
