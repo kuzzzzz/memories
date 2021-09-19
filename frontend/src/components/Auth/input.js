@@ -8,7 +8,7 @@ const Input = ({
   half,
   label,
   type,
-  handlechange,
+  handleChange,
   autoFocus,
   handleShowPassword,
 }) => {
@@ -16,11 +16,11 @@ const Input = ({
     <Grid item xs={12} sm={half ? 6 : 12}>
       <TextField
         name={name}
-        onChange={handlechange}
+        onChange={handleChange}
         variant="outlined"
         label={label}
         type={type}
-        handlechange={handlechange}
+        handlechange={handleChange}
         required
         fullWidth
         autoFocus={autoFocus}
