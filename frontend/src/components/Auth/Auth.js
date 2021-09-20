@@ -106,6 +106,7 @@ const Auth = () => {
             <Input
               name="password"
               label="Password"
+              handleChange={handleChange}
               handleShowPassword={handleShowPassword}
               type={showPassword ? "text" : "password"}
             />

@@ -53,7 +53,7 @@ async function likePost(req, res) {
 
   const post = await PostMessage.findById(id);
 
-  const index = post.likes.findIndex((id) => id == String(res.userId));
+  const index = post.likes.findIndex((id) => id == String(req.userId));
 
   if (index === -1) {
     post.likes.push(req.userId);

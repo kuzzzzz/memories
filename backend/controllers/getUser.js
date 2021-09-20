@@ -2,10 +2,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user.js");
-const mongoose = require("mongoose");
 
 async function signin(req, res) {
-  const { email, password } = req.bdy;
+  const { email, password } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -30,14 +29,14 @@ async function signin(req, res) {
   }
 }
 async function signup(req, res) {
-  const { email, password, confirmPassword, firstName, lastName } = req.bdy;
+  const { email, password, confirmPassword, firstName, lastName } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
-    if (!existingUser)
-      return res.status(404).json({ message: "User already exist" });
+    if (existingUser)
+      return res.status(400).json({ message: "User already exist" });
     if (password !== confirmPassword)
-      return res.status(404).json({ message: "Password mismatch" });
+      return res.status(400).json({ message: "Password mismatch" });
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
