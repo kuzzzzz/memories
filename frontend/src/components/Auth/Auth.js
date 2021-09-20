@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 import { GoogleLogin } from "react-google-login";
 import useStyles from "./styles";
 import { useHistory } from "react-router-dom";
-import Input from "./Input";
+import Input from "./input";
 import Icon from "./icon";
 import LockOutlined from "@material-ui/icons/LockOutlined";
 import { signin, signup } from "../../actions/auth";
