@@ -1,5 +1,22 @@
 const PostMessage = require("../models/postMessages.js");
 const mongoose = require("mongoose");
+const { post } = require("../routes/posts.js");
+
+async function getPostsBySearch(req, res) {
+  const { searchQuery, tags } = req.query;
+
+  try {
+    const title = new RegExp(searchQuery, "i");
+
+    const posts = await PostMessage.find({
+      $or: [{ title }, { tags: { $in: tags.split(",") } }],
+    });
+
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+}
 
 async function getPosts(req, res) {
   try {
@@ -10,6 +27,7 @@ async function getPosts(req, res) {
     res.status(404).json({ message: err.message });
   }
 }
+
 async function createPost(req, res) {
   const post = req.body;
 
@@ -61,7 +79,7 @@ async function likePost(req, res) {
 
   if (index === -1) {
     post.likes.push(req.userId);
-  } else { 
+  } else {
     post.likes = post.likes.filter((id) => id !== String(req.userId));
   }
   const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
@@ -69,4 +87,11 @@ async function likePost(req, res) {
   });
   res.json(updatedPost);
 }
-module.exports = { getPosts, createPost, updatePost, deletePost, likePost };
+module.exports = {
+  getPosts,
+  createPost,
+  updatePost,
+  deletePost,
+  likePost,
+  getPostsBySearch,
+};
