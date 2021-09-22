@@ -54,6 +54,18 @@ async function createPost(req, res) {
     res.status(404).json({ message: error.message });
   }
 }
+
+async function getPost(req, res) {
+  const { id } = req.params;
+
+  try {
+    const post = await PostMessage.findById(id);
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+} 
+
 async function updatePost(req, res) {
   const { id: _id } = req.params;
   const post = req.body;
@@ -100,6 +112,7 @@ async function likePost(req, res) {
 }
 module.exports = {
   getPosts,
+  getPost,
   createPost,
   updatePost,
   deletePost,
