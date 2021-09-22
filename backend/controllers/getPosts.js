@@ -1,15 +1,44 @@
 const PostMessage = require("../models/postMessages.js");
 const mongoose = require("mongoose");
 
-async function getPosts(req, res) {
-  try {
-    const postMessages = await PostMessage.find();
+async function getPostsBySearch(req, res) {
+  const { searchQuery, tags } = req.query;
 
-    res.status(200).json(postMessages);
+  try {
+    const title = new RegExp(searchQuery, "i");
+
+    const posts = await PostMessage.find({
+      $or: [{ title }, { tags: { $in: tags.split(",") } }],
+    });
+
+    res.status(200).json(posts);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
 }
+
+async function getPosts(req, res) {
+  const { page } = req.query;
+  try {
+    const LIMIT = 4;
+    const startIndex = (Number(page) - 1) * LIMIT;
+    const total = await PostMessage.countDocuments({});
+
+    const posts = await PostMessage.find()
+      .sort({ _id: -1 })
+      .limit(LIMIT)
+      .skip(startIndex);
+
+    res.status(200).json({
+      data: posts,
+      currentPage: Number(page),
+      numberOfPages: Math.ceil(total / LIMIT),
+    });
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+}
+
 async function createPost(req, res) {
   const post = req.body;
 
@@ -25,6 +54,18 @@ async function createPost(req, res) {
     res.status(404).json({ message: error.message });
   }
 }
+
+async function getPost(req, res) {
+  const { id } = req.params;
+
+  try {
+    const post = await PostMessage.findById(id);
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+} 
+
 async function updatePost(req, res) {
   const { id: _id } = req.params;
   const post = req.body;
@@ -61,7 +102,7 @@ async function likePost(req, res) {
 
   if (index === -1) {
     post.likes.push(req.userId);
-  } else { 
+  } else {
     post.likes = post.likes.filter((id) => id !== String(req.userId));
   }
   const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
@@ -69,4 +110,12 @@ async function likePost(req, res) {
   });
   res.json(updatedPost);
 }
-module.exports = { getPosts, createPost, updatePost, deletePost, likePost };
+module.exports = {
+  getPosts,
+  getPost,
+  createPost,
+  updatePost,
+  deletePost,
+  likePost,
+  getPostsBySearch,
+};
