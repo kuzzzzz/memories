@@ -9,6 +9,7 @@ const {
   updatePost,
   deletePost,
   likePost,
+  commentPost,
 } = require("../controllers/getPosts");
 
 const router = express.Router();
@@ -21,5 +22,7 @@ router.get("/:id", getPost);
 router.patch("/:id", auth, updatePost);
 router.delete("/:id", auth, deletePost);
 router.patch("/:id/likePost", auth, likePost);
+
+router.post("/:id/commentPost", auth, commentPost);
 
 module.exports = router;
