@@ -64,7 +64,7 @@ async function getPost(req, res) {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
-} 
+}
 
 async function updatePost(req, res) {
   const { id: _id } = req.params;
@@ -110,6 +110,21 @@ async function likePost(req, res) {
   });
   res.json(updatedPost);
 }
+
+async function commentPost(req, res) {
+  const { id } = req.params;
+
+  const { value } = req.body;
+  const post = await PostMessage.findById(id);
+
+  post.comments.push(value);
+
+  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
+    new: true,
+  });
+  res.json(updatedPost);
+}
+
 module.exports = {
   getPosts,
   getPost,
@@ -117,5 +132,6 @@ module.exports = {
   updatePost,
   deletePost,
   likePost,
+  commentPost,
   getPostsBySearch,
 };
